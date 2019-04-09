@@ -116,6 +116,8 @@ namespace Lab01
             worker.ProgressChanged += Worker_ProgressChanged;
         }
 
+        private string UriImage { get; set; }
+
         private void OpenImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -124,7 +126,8 @@ namespace Lab01
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                image.Source = new BitmapImage(new Uri(openFileDialog.FileName));
+                UriImage = openFileDialog.FileName;
+                image.Source = new BitmapImage(new Uri(UriImage));
             }
         }
 
@@ -132,7 +135,7 @@ namespace Lab01
         {
             if (!String.IsNullOrEmpty(nameTextBox.Text)  && image.Source != null)
             {
-                people.Add(new Person {Name = nameTextBox.Text, Picture = (BitmapImage)image.Source });
+                people.Add(new Person {Name = nameTextBox.Text, Uri=UriImage, Picture = new BitmapImage(new Uri(UriImage)) });
                 nameTextBox.Text = String.Empty;
                 image.Source = new BitmapImage();
             }
@@ -146,7 +149,7 @@ namespace Lab01
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                people.Add(new Person { Name = name, Picture = new BitmapImage(new Uri(image)) });
+                people.Add(new Person { Name = name, Uri=image, Picture = new BitmapImage(new Uri(image)) });
             });
         }
 
@@ -176,13 +179,13 @@ namespace Lab01
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            int finalNumber = 5;
+            uint finalNumber = 5;
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     try
                     {
-                        finalNumber = int.Parse(finalNumberTextBox.Text);
+                        finalNumber = uint.Parse(finalNumberTextBox.Text);
                     }
                     catch
                     {

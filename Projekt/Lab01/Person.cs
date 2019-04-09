@@ -12,6 +12,7 @@ namespace Lab01
     {
         public string Name { get; set; }
         public BitmapImage Picture { get; set; }
+        public string Uri { get; set; }
 
         public Person()
         {
