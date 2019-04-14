@@ -60,6 +60,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="NumberValidation.cs" />
     <Compile Include="WikiConnection.cs" />
     <Compile Include="WikiDataEntry.cs" />
     <Compile Include="WikiParser.cs" />

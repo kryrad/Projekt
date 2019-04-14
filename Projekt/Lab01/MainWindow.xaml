@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab01"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="550" Width="800">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -21,7 +22,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel Grid.Column="1" Margin="20" Orientation="Vertical">
+        <StackPanel Grid.Column="1" Margin="20" Orientation="Vertical" DataContext="{Binding}">
             <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" Height="Auto">
                 <Image x:Name="image" Margin="10" Width="150" Height="150"/>
                 <Button Content="Wybierz" Width="75" Height="22" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="OpenImage_Click" />
@@ -38,11 +39,35 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Content="Perform stupid calculations" Grid.Column="1" Margin="5" Grid.Row="0" Grid.RowSpan="2" Click="Button_Click"/>
-                <TextBlock Text="Final number" Grid.Column="0" Grid.Row="0" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"></TextBlock>
-                <TextBox x:Name="finalNumberTextBox" Text="5" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"></TextBox> 
-            </Grid>
-            <TextBlock x:Name="progressTextBlock" TextWrapping="Wrap" Text=""/>
+                <Button Content="Perform stupid calculations" Grid.Column="1" Margin="5" Grid.Row="0" Grid.RowSpan="2" Click="Button_Click">
+                    <Button.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger 
+                                         Binding="{Binding ElementName=finalNumberTextBox, Path=(Validation.HasError)}"
+                                         Value="true">
+                                    <Setter Property="Button.IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                    <TextBlock Text="Final number" Grid.Column="0" Grid.Row="0" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <TextBox x:Name="finalNumberTextBox"  Grid.Column="0" Grid.Row="1" VerticalAlignment="Top">
+                    <TextBox.Text>
+                        <Binding Path="Number" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:NumberValidation ValidatesOnTargetUpdated="True"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </Grid>  
+            <TextBlock  Foreground="Red"
+                        Text="{Binding ElementName=finalNumberTextBox, Path=(Validation.Errors)[0].ErrorContent, 
+                        UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnValidationError=True, 
+                        NotifyOnSourceUpdated=True, ValidatesOnExceptions=True}"/>
+            <TextBlock x:Name="progressTextBlock" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.351,5.393"/>
             <TextBlock x:Name="progressTextBlock2" TextWrapping="Wrap" Text=""/>
             <ProgressBar x:Name="progressBar" Height="20"/>
             <Button Content="Cancel"  Click="Cancel_Click"/>

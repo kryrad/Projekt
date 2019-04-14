@@ -89,7 +89,6 @@ namespace Lab01
 
         ObservableCollection<Person> people = new ObservableCollection<Person>
         {
-
         };
 
         public ObservableCollection<Person> Items
@@ -104,10 +103,10 @@ namespace Lab01
             InitializeComponent();
             DataContext = this;
       
-            aTimer = new System.Timers.Timer(10000);
+            aTimer = new System.Timers.Timer();
 
             aTimer.Elapsed += new ElapsedEventHandler(OnTimeWorker);
-            aTimer.Interval = 5000;
+            aTimer.Interval = 15000;
             aTimer.Enabled = true;
 
             worker.WorkerReportsProgress = true;
@@ -115,8 +114,6 @@ namespace Lab01
             worker.DoWork += Worker_DoWork;
             worker.ProgressChanged += Worker_ProgressChanged;
         }
-
-        private string UriImage { get; set; }
 
         private void OpenImage_Click(object sender, RoutedEventArgs e)
         {
@@ -126,16 +123,25 @@ namespace Lab01
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                UriImage = openFileDialog.FileName;
-                image.Source = new BitmapImage(new Uri(UriImage));
+                image.Source = new BitmapImage(new Uri(openFileDialog.FileName));
             }
+        }
+        public uint Number { get; set; }
+
+        public byte[] GetJPGFromImageControl(BitmapImage image)
+        {
+            MemoryStream memStream = new MemoryStream();
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(image));
+            encoder.Save(memStream);
+            return memStream.ToArray();
         }
 
         private void AddNewPersonButton_Click(object sender, RoutedEventArgs e)
         {
             if (!String.IsNullOrEmpty(nameTextBox.Text)  && image.Source != null)
             {
-                people.Add(new Person {Name = nameTextBox.Text, Uri=UriImage, Picture = new BitmapImage(new Uri(UriImage)) });
+                people.Add(new Person {Name = nameTextBox.Text, Picture = GetJPGFromImageControl((BitmapImage)image.Source) });
                 nameTextBox.Text = String.Empty;
                 image.Source = new BitmapImage();
             }
@@ -145,11 +151,21 @@ namespace Lab01
             }
         }
 
+        public byte[] GetJPGFromUrl(string image)
+        {
+            byte[] imageBytes;
+            using (var webClient = new WebClient())
+            {
+                imageBytes = webClient.DownloadData(new Uri(image)); 
+            }
+            return imageBytes;
+        }
+
         private void AddPerson(string name,String image)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                people.Add(new Person { Name = name, Uri=image, Picture = new BitmapImage(new Uri(image)) });
+                people.Add(new Person { Name = name, Picture = GetJPGFromUrl(image) });
             });
         }
 
@@ -165,8 +181,7 @@ namespace Lab01
             if (worker.IsBusy != true)
                 worker.RunWorkerAsync();
             aTimer.Start();
-        }
-
+        }       
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -179,23 +194,8 @@ namespace Lab01
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            uint finalNumber = 5;
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    try
-                    {
-                        finalNumber = uint.Parse(finalNumberTextBox.Text);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Zły format danych!");
-                        finalNumberTextBox.Text = "5";
-                    }
-                });
-
             BackgroundWorker worker = sender as BackgroundWorker;
-            for (int i = 0; i < finalNumber; i++)
+            for (int i = 0; i < Number; i++)
             {
                 if (worker.CancellationPending == true)
                 {
@@ -206,7 +206,7 @@ namespace Lab01
                 else
                 {
                     worker.ReportProgress(
-                        (int)Math.Round((float)i * 100.0 / (float)finalNumber),
+                        (int)Math.Round((float)i * 100.0 / (float)Number),
                         "Loading...");
 
                     string response = WikiConnection.LoadDataAsync().Result;

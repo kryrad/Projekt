@@ -51,3 +51,4 @@ C:\Users\Velgherd\Desktop\Projekt\Lab01\obj\Debug\Lab01.csproj.CoreCompileInputs
 C:\Users\Velgherd\Desktop\Projekt\Lab01\obj\Debug\Lab01.csproj.CopyComplete
 C:\Users\Velgherd\Desktop\Projekt\Lab01\obj\Debug\Lab01.exe
 C:\Users\Velgherd\Desktop\Projekt\Lab01\obj\Debug\Lab01.pdb
+C:\Users\Velgherd\Desktop\Projekt\Lab01\obj\Debug\GeneratedInternalTypeHelper.g.cs
