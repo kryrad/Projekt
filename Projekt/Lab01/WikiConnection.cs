@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows;
 
 namespace Lab01
 {
@@ -14,16 +15,22 @@ namespace Lab01
 
         public static async Task<string> LoadDataAsync()
         {
-            Task<string> result;
-            string results;
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage response = await client.GetAsync(Url))
-            using (HttpContent content = response.Content)
+            try
             {
-                result = content.ReadAsStringAsync();
-                results = await content.ReadAsStringAsync();
+                Task<string> result;
+                using (HttpClient client = new HttpClient())
+                using (HttpResponseMessage response = await client.GetAsync(Url))
+                using (HttpContent content = response.Content)
+                {
+                    result = content.ReadAsStringAsync();
+                }
+                return await result;
             }
-            return await result;
+            catch (Exception)
+            {
+                MessageBox.Show("Connection error");
+                return string.Empty;
+            }
         }
     }
 }

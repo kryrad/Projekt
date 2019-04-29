@@ -33,7 +33,8 @@ namespace Lab01
                 List<String> imgs = (from x in doc.DocumentNode.Descendants()
                                       where x.Name.ToLower() == "img"
                                       select x.Attributes["src"].Value).ToList<String>();
-                result.Picture = imgs[0];
+
+                 result.Picture = imgs[0];
 
             } while ((String.IsNullOrEmpty(result.Picture)) && (result.Picture!= "//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1"));
             result.Picture = "https:" + result.Picture;

@@ -25,7 +25,7 @@
         <StackPanel Grid.Column="1" Margin="20" Orientation="Vertical" DataContext="{Binding}">
             <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Orientation="Horizontal" Height="Auto">
                 <Image x:Name="image" Margin="10" Width="150" Height="150"/>
-                <Button Content="Wybierz" Width="75" Height="22" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="OpenImage_Click" />
+                <Button Content="Select image" Width="85" Height="22" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="OpenImage_Click" />
             </StackPanel>
             <TextBlock TextWrapping="Wrap" Text="Name"/>
             <TextBox Name ="nameTextBox" Height="23" TextWrapping="Wrap" Text="Jarosław" Margin="0,0,0,10"/>
@@ -39,7 +39,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Content="Perform stupid calculations" Grid.Column="1" Margin="5" Grid.Row="0" Grid.RowSpan="2" Click="Button_Click">
+                <Button Content="Download data" Grid.Column="1" Margin="5" Grid.Row="0" Grid.RowSpan="2" Click="Button_Click">
                     <Button.Style>
                         <Style>
                             <Style.Triggers>
@@ -52,7 +52,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                    <TextBlock Text="Final number" Grid.Column="0" Grid.Row="0" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    <TextBlock Text="How many" Grid.Column="0" Grid.Row="0" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                 <TextBox x:Name="finalNumberTextBox"  Grid.Column="0" Grid.Row="1" VerticalAlignment="Top">
                     <TextBox.Text>
                         <Binding Path="Number" UpdateSourceTrigger="PropertyChanged">

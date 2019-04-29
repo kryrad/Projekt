@@ -30,19 +30,6 @@ namespace Lab01
     {
         BackgroundWorker worker = new BackgroundWorker();
 
-        async Task<int> GetNumberAsync(int number)
-        {
-            if (number < 0)
-                throw new ArgumentOutOfRangeException("number", number, "The number must be greater or equal zero");
-            int result = 0;
-            while (result < number)
-            {
-                result++;
-                await Task.Delay(100);
-            }
-            return number;
-        }
-
         protected void UpdateProgressBlock(string text, TextBlock textBlock)
         {
             try
@@ -55,41 +42,7 @@ namespace Lab01
             catch { } 
         }
 
-        class WaitingAnimation
-        {
-            private readonly int maxNumberOfDots;
-            private int currentDots;
-            private MainWindow sender;
-            
-
-            public WaitingAnimation(int maxNumberOfDots, MainWindow sender)
-            {
-                this.maxNumberOfDots = maxNumberOfDots;
-                this.sender = sender;
-                currentDots = 0;
-            }
-
-            public void CheckStatus(Object stateInfo)
-            {
-                sender.UpdateProgressBlock(
-                    "Processing" + 
-                    new Func<string>(() => {
-                        StringBuilder strBuilder = new StringBuilder(string.Empty);
-                        for (int i = 0; i < currentDots; i++)
-                            strBuilder.Append(".");
-                        return strBuilder.ToString();
-                    })(), sender.progressTextBlock
-                );
-                if (currentDots == maxNumberOfDots)
-                    currentDots = 0;
-                else
-                    currentDots++;
-            }
-        }
-
-        ObservableCollection<Person> people = new ObservableCollection<Person>
-        {
-        };
+        ObservableCollection<Person> people = new ObservableCollection<Person>();
 
         public ObservableCollection<Person> Items
         {
@@ -107,7 +60,7 @@ namespace Lab01
 
             aTimer.Elapsed += new ElapsedEventHandler(OnTimeWorker);
             aTimer.Interval = 15000;
-            aTimer.Enabled = true;
+            aTimer.Start();
 
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
@@ -147,7 +100,7 @@ namespace Lab01
             }
             else
             {
-                MessageBox.Show("Nie wszystkie pola wypełnione!");
+                MessageBox.Show("Some fields are empty!");
             }
         }
 
@@ -177,10 +130,8 @@ namespace Lab01
 
         private void OnTimeWorker(object sender, ElapsedEventArgs e)
         {
-            aTimer.Stop();
             if (worker.IsBusy != true)
                 worker.RunWorkerAsync();
-            aTimer.Start();
         }       
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -189,11 +140,11 @@ namespace Lab01
                 progressBar.Value = e.ProgressPercentage;
                 progressTextBlock2.Text = e.UserState as string;
             });
-
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            aTimer.Stop();
             BackgroundWorker worker = sender as BackgroundWorker;
             for (int i = 0; i < Number; i++)
             {
@@ -221,6 +172,8 @@ namespace Lab01
                 }
             }
             worker.ReportProgress(100, "Done");
+            aTimer.Stop();
+            aTimer.Start();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
